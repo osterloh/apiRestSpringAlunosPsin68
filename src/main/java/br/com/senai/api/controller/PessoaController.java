@@ -2,6 +2,7 @@ package br.com.senai.api.controller;
 
 import br.com.senai.domain.model.Pessoa;
 import br.com.senai.domain.repository.PessoaRepository;
+import br.com.senai.domain.service.PessoaService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.List;
 public class PessoaController {
 
     private PessoaRepository pessoaRepository;
+    private PessoaService pessoaService;
 
     @GetMapping
     public List<Pessoa> listar(){
@@ -40,7 +42,7 @@ public class PessoaController {
 
     @PostMapping
     public Pessoa cadastrar(@Valid @RequestBody Pessoa pessoa){
-        return pessoaRepository.save(pessoa);
+        return pessoaService.cadastrar(pessoa);
     }
 
     @PutMapping("/{pessoaId}")
