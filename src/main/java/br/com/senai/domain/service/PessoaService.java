@@ -24,4 +24,14 @@ public class PessoaService {
 
         return pessoaRepository.save(pessoa);
     }
+
+    @Transactional
+    public void excluir(Long pessoaId){
+        pessoaRepository.deleteById(pessoaId);
+    }
+
+    public Pessoa buscar(Long pessoaId){
+        return pessoaRepository.findById(pessoaId)
+                .orElseThrow(() -> new NegocioException("Pessoa não encontrada."));
+    }
 }
