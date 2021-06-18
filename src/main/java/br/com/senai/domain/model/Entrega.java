@@ -1,5 +1,6 @@
 package br.com.senai.domain.model;
 
+import br.com.senai.domain.exception.NegocioException;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,4 +37,21 @@ public class Entrega {
 
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private LocalDateTime dataFinalizacao;
+
+    public void finalizar() {
+    	if(naoPodeSerFinalizada()){
+    		throw new NegocioException("Entrega não pode ser finalizada.");
+		}
+
+    	setStatus(StatusEntrega.FINALIZADA);
+    	setDataFinalizacao(LocalDateTime.now());
+    }
+
+    public boolean podeSerFinalizada(){
+    	return StatusEntrega.PENDENTE.equals(getStatus());
+	}
+
+	public boolean naoPodeSerFinalizada(){
+    	return !podeSerFinalizada();
+	}
 }
