@@ -1,10 +1,14 @@
 package br.com.senai.api.controller;
 
+import br.com.senai.api.assembler.PessoaAssembler;
+import br.com.senai.api.model.PessoaDTO;
+import br.com.senai.api.model.input.PessoaInputDTO;
 import br.com.senai.domain.model.Pessoa;
 import br.com.senai.domain.repository.PessoaRepository;
 import br.com.senai.domain.service.PessoaService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,32 +21,40 @@ public class PessoaController {
 
     private PessoaRepository pessoaRepository;
     private PessoaService pessoaService;
+    private PessoaAssembler pessoaAssembler;
 
     @GetMapping
-    public List<Pessoa> listar(){
-        return pessoaRepository.findAll();
+    public List<PessoaDTO> listar(){
+        return pessoaAssembler.toCollectionModel(pessoaRepository.findAll());
     }
 
     @GetMapping("/nome/{pessoaNome}")
-    public List<Pessoa> listarPorNome(@PathVariable String pessoaNome){
-        return pessoaRepository.findByNome(pessoaNome);
+    public List<PessoaDTO> listarPorNome(@PathVariable String pessoaNome){
+        return pessoaAssembler.toCollectionModel(pessoaRepository.findByNome(pessoaNome));
     }
 
     @GetMapping("/nome/containing/{nomeContaining}")
-    public List<Pessoa> listarNomeContaining(@PathVariable String nomeContaining){
-        return pessoaRepository.findByNomeContaining(nomeContaining);
+    public List<PessoaDTO> listarNomeContaining(@PathVariable String nomeContaining){
+        return pessoaAssembler.toCollectionModel(pessoaRepository.findByNomeContaining(nomeContaining));
     }
 
     @GetMapping("{pessoaId}")
-    public ResponseEntity<Pessoa> buscar(@PathVariable Long pessoaId){
+    public ResponseEntity<PessoaDTO> buscar(@PathVariable Long pessoaId){
         return pessoaRepository.findById(pessoaId)
-                .map(pessoa -> ResponseEntity.ok(pessoa))
+                .map(pessoa -> ResponseEntity.ok(pessoaAssembler.toModel(pessoa)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Pessoa cadastrar(@Valid @RequestBody Pessoa pessoa){
-        return pessoaService.cadastrar(pessoa);
+    public PessoaDTO cadastrar(@Valid @RequestBody PessoaInputDTO pessoaInputDTO){
+        Pessoa newPessoa = pessoaAssembler.toEntity(pessoaInputDTO);
+        newPessoa.getUsuario().setSenha(
+                new BCryptPasswordEncoder()
+                        .encode(pessoaInputDTO.getUsuario().getSenha()));
+
+        Pessoa pessoa = pessoaService.cadastrar(newPessoa);
+
+        return pessoaAssembler.toModel(pessoa);
     }
 
     @PutMapping("/{pessoaId}")
