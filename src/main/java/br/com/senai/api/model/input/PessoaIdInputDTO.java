@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class PessoaInputDTO {
+public class PessoaIdInputDTO {
 
     @NotNull
     private Long id;

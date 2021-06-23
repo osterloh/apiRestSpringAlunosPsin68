@@ -1,8 +1,8 @@
 package br.com.senai.api.controller;
 
 import br.com.senai.api.assembler.OcorrenciaAssembler;
-import br.com.senai.api.model.OcorrenciaModel;
-import br.com.senai.api.model.input.OcorrenciaInput;
+import br.com.senai.api.model.OcorrenciaDTO;
+import br.com.senai.api.model.input.OcorrenciaInputDTO;
 import br.com.senai.domain.model.Entrega;
 import br.com.senai.domain.model.Ocorrencia;
 import br.com.senai.domain.service.EntregaService;
@@ -25,17 +25,17 @@ public class OcorrenciaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OcorrenciaModel registrar(
+    public OcorrenciaDTO registrar(
             @PathVariable Long entregaId,
-            @Valid @RequestBody OcorrenciaInput ocorrenciaInput){
+            @Valid @RequestBody OcorrenciaInputDTO ocorrenciaInputDTO){
         Ocorrencia ocorrenciaRegistrada = ocorrenciaService
-                .registrar(entregaId, ocorrenciaInput.getDescricao());
+                .registrar(entregaId, ocorrenciaInputDTO.getDescricao());
 
         return ocorrenciaAssembler.toModel(ocorrenciaRegistrada);
     }
 
     @GetMapping
-    public List<OcorrenciaModel> listar(@PathVariable Long entregaId){
+    public List<OcorrenciaDTO> listar(@PathVariable Long entregaId){
         Entrega entrega = entregaService.buscaEntrega(entregaId);
 
         return ocorrenciaAssembler.toCollectionModel(entrega.getOcorrencias());
