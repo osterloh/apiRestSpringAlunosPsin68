@@ -1,5 +1,5 @@
 CREATE TABlE entregas(
-	id serial,
+	id int not null auto_increment,
 	pessoa_id bigint not null,
 	taxa decimal(10,2) not null,
 	status varchar(20) not null,
