@@ -56,6 +56,23 @@ public class PessoaController {
 
         return pessoaAssembler.toModel(pessoa);
     }
+    
+    @PostMapping("/usuario")
+    public PessoaDTO cadUsuario(@Valid @RequestBody UsuarioInputDTO usuarioInputDTO){
+        Usuario usuario = usuarioAssembler.toEntity(usuarioInputDTO);
+        Pessoa newPessoa = new Pessoa();
+        newPessoa.setUsuario(usuario);
+        newPessoa.setTelefone("(47)99988-7755");
+        newPessoa.setNome("Sem nome");
+
+        newPessoa.getUsuario().setSenha(
+                new BCryptPasswordEncoder()
+                        .encode(usuarioInputDTO.getSenha()));
+
+        Pessoa pessoa = pessoaService.cadastrar(newPessoa);
+
+        return pessoaAssembler.toModel(pessoa);
+    }
 
     @PutMapping("/{pessoaId}")
     public ResponseEntity<Pessoa> editar(
