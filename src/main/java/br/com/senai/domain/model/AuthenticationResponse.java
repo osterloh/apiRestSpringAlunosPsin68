@@ -1,5 +1,6 @@
 package br.com.senai.domain.model;
 
+import br.com.senai.api.model.UsuarioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
