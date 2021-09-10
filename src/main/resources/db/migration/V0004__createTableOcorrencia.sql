@@ -1,5 +1,5 @@
 CREATE TABLE ocorrencia(
-    id bigint not null auto_increment,
+    id serial,
     entrega_id bigint not null,
     descricao text not null,
     data_registro timestamp not null,

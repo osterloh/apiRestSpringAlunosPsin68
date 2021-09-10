@@ -1,5 +1,5 @@
 CREATE TABLE pessoa(
-    id bigint not null auto_increment,
+    id serial,
     nome varchar(100) not null,
     email varchar(100) not null,
     telefone varchar(45) not null,
